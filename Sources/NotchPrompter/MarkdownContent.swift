@@ -105,10 +105,34 @@ struct MarkdownContent: View {
     private func inline(_ string: String) -> AttributedString {
         var opts = AttributedString.MarkdownParsingOptions()
         opts.interpretedSyntax = .inlineOnlyPreservingWhitespace
-        if let parsed = try? AttributedString(markdown: string, options: opts) {
-            return parsed
+        var attr = (try? AttributedString(markdown: string, options: opts))
+            ?? AttributedString(string)
+
+        // Paint every occurrence of the Find query like a text selection.
+        let query = state.highlightQuery
+        if !query.isEmpty {
+            let options: String.CompareOptions = state.highlightCaseSensitive
+                ? []
+                : [.caseInsensitive]
+            let plain = String(attr.characters)
+            var cursor = plain.startIndex
+            while cursor < plain.endIndex,
+                  let hit = plain.range(
+                      of: query,
+                      options: options,
+                      range: cursor..<plain.endIndex
+                  )
+            {
+                if let lower = AttributedString.Index(hit.lowerBound, within: attr),
+                   let upper = AttributedString.Index(hit.upperBound, within: attr)
+                {
+                    attr[lower..<upper].backgroundColor = Color.yellow.opacity(0.55)
+                    attr[lower..<upper].foregroundColor = Color.black
+                }
+                cursor = hit.upperBound
+            }
         }
-        return AttributedString(string)
+        return attr
     }
 
     private func headingScale(_ level: Int) -> CGFloat {

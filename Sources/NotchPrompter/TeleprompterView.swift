@@ -85,6 +85,25 @@ struct TeleprompterView: View {
             .onChange(of: state.isPlaying) { playing in
                 if playing { lastTick = .now }
             }
+            .onReceive(state.manualScroll) { delta in
+                // AppKit reports positive deltaY when the surface moves down
+                // (finger up / wheel up). In a teleprompter, "scroll up"
+                // should advance forward through the script, i.e. increase
+                // the offset — so we subtract.
+                let maxScroll = max(0, contentHeight - 60)
+                let next = scroll - delta
+                scroll = min(max(0, next), maxScroll)
+                lastTick = .now
+            }
+            .onReceive(state.scrollTo) { target in
+                // Jump the teleprompter to an absolute y — used by Find so the
+                // current match sits in the viewport's vertical center. Pause
+                // playback so auto-scroll doesn't immediately steal focus.
+                state.isPlaying = false
+                let maxScroll = max(0, contentHeight - 60)
+                scroll = min(max(0, target), maxScroll)
+                lastTick = .now
+            }
         }
     }
 }

@@ -4,17 +4,10 @@ struct ContentView: View {
     @EnvironmentObject var state: PrompterState
     @Environment(\.openWindow) private var openWindow
     @State private var hovering = false
+    @State private var didBootstrapToolbar = false
 
     var body: some View {
         TeleprompterView()
-            .overlay(alignment: .bottom) {
-                ControlsOverlay {
-                    openWindow(id: "settings")
-                }
-                .padding(.bottom, 14)
-                .opacity(hovering ? 1 : 0)
-                .animation(.easeInOut(duration: 0.25), value: hovering)
-            }
             .overlay(alignment: .topLeading) {
                 if let name = state.currentFileURL?.lastPathComponent {
                     Text(name)
@@ -32,6 +25,16 @@ struct ContentView: View {
                 switch phase {
                 case .active: hovering = true
                 case .ended:  hovering = false
+                }
+            }
+            .onAppear {
+                // Open the floating toolbar once on first launch. `openWindow`
+                // from inside `onAppear` needs to be deferred a tick so SwiftUI
+                // has finished composing the main scene.
+                guard !didBootstrapToolbar else { return }
+                didBootstrapToolbar = true
+                DispatchQueue.main.async {
+                    openWindow(id: "toolbar")
                 }
             }
     }

@@ -99,9 +99,33 @@ struct SettingsPanel: View {
 
                 Divider().padding(.vertical, 4)
 
+                section("Toolbar")
+
+                labelled("Orientation") {
+                    Picker("", selection: $state.toolbarVertical) {
+                        Text("Horizontal").tag(false)
+                        Text("Vertical").tag(true)
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .frame(width: 200)
+                }
+
+                Divider().padding(.vertical, 4)
+
                 section("Playback")
 
                 slider("Speed", value: $state.speed, range: 5...500, step: 5, unit: " pt/s")
+
+                Divider().padding(.vertical, 4)
+
+                Button(role: .destructive) {
+                    state.resetToDefaults()
+                } label: {
+                    Label("Revert to Default", systemImage: "arrow.uturn.backward")
+                        .frame(maxWidth: .infinity)
+                }
+                .controlSize(.large)
 
                 shortcutsFooter
 
