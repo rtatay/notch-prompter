@@ -55,7 +55,9 @@ enum NotchWindow {
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
         window.isMovableByWindowBackground = true
-        window.level = .floating
+        // Always on top: above Find (floating+2), Settings/Shortcuts (floating+1),
+        // and the main prompter (floating).
+        window.level = NSWindow.Level(rawValue: NSWindow.Level.floating.rawValue + 3)
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         window.backgroundColor = .clear
         window.isOpaque = false

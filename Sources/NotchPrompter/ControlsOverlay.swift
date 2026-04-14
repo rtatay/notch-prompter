@@ -204,16 +204,36 @@ struct ControlsOverlay: View {
         width: CGFloat,
         help: String
     ) -> some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 6) {
             Image(systemName: icon)
                 .font(smallIconFont)
                 .opacity(0.85)
             Text("\(Int(value.wrappedValue))")
                 .font(readoutFont)
                 .frame(width: width, alignment: .trailing)
-            Stepper("", value: value, in: range, step: step)
-                .labelsHidden()
-                .controlSize(.small)
+            // Custom stacked chevrons — native Stepper disappears on our
+            // transparent palette background, so we draw our own.
+            VStack(spacing: 1) {
+                Button {
+                    value.wrappedValue = min(range.upperBound, value.wrappedValue + step)
+                } label: {
+                    Image(systemName: "chevron.up")
+                        .font(.system(size: 9, weight: .bold))
+                        .frame(width: 18, height: 12)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                Button {
+                    value.wrappedValue = max(range.lowerBound, value.wrappedValue - step)
+                } label: {
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 9, weight: .bold))
+                        .frame(width: 18, height: 12)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.leading, 2)
         }
         .help(help)
     }

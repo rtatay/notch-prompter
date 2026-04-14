@@ -113,6 +113,8 @@ struct NotchPrompterApp: App {
                         rawValue: NSWindow.Level.floating.rawValue + 1
                     )
                     window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+                    window.styleMask.remove(.resizable)
+                    window.standardWindowButton(.zoomButton)?.isHidden = true
                     window.makeKeyAndOrderFront(nil)
                 })
                 .onAppear {
@@ -142,6 +144,8 @@ struct NotchPrompterApp: App {
                         rawValue: NSWindow.Level.floating.rawValue + 1
                     )
                     window.isReleasedWhenClosed = false
+                    window.styleMask.remove(.resizable)
+                    window.standardWindowButton(.zoomButton)?.isHidden = true
                 })
                 .onAppear { NSApp.activate(ignoringOtherApps: true) }
         }

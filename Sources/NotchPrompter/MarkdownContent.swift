@@ -53,6 +53,8 @@ struct MarkdownContent: View {
                 .foregroundColor(state.textColor)
                 .multilineTextAlignment(state.textAlignment)
                 .tracking(CGFloat(state.letterSpacing))
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.vertical, 8)
 
         case .paragraph(let text):
