@@ -27,7 +27,7 @@ struct ControlsOverlay: View {
                         playbackButtons
                     }
                     Rectangle()
-                        .fill(.white.opacity(0.22))
+                        .fill(state.textColor.opacity(0.22))
                         .frame(width: 1)
                     VStack(alignment: .leading, spacing: groupSpacing) {
                         actionButtons
@@ -40,7 +40,7 @@ struct ControlsOverlay: View {
                         playbackButtons
                     }
                     Rectangle()
-                        .fill(.white.opacity(0.22))
+                        .fill(state.textColor.opacity(0.22))
                         .frame(height: 1)
                     HStack(spacing: groupSpacing) {
                         actionButtons
@@ -48,7 +48,10 @@ struct ControlsOverlay: View {
                 }
             }
         }
-        .foregroundStyle(.white)
+        // Icon + text tint tracks the prompter's text color so a white-on-
+        // black theme shows white icons and a black-on-white theme shows
+        // black icons.
+        .foregroundStyle(state.textColor)
         .padding(.horizontal, horizontalPadding)
         .padding(.vertical, verticalPadding)
         .background(
@@ -58,7 +61,7 @@ struct ControlsOverlay: View {
                 .fill(state.backgroundColor.opacity(state.backgroundOpacity))
                 .overlay(
                     RoundedRectangle(cornerRadius: CGFloat(state.cornerRadius), style: .continuous)
-                        .strokeBorder(.white.opacity(0.12), lineWidth: 1)
+                        .strokeBorder(state.textColor.opacity(0.12), lineWidth: 1)
                 )
                 .shadow(color: .black.opacity(0.35), radius: 12, y: 4)
         )
